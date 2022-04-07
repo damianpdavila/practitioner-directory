@@ -27,7 +27,7 @@ $centerClass     = $bootstrapHelper->getClassMapping('center');
 $fields = $this->fields;
 
 // Remove first_name and last_name as it is displayed in single name field
-
+/*
 for ($i = 0, $n = count($fields); $i < $n; $i++)
 {
 	if (in_array($fields[$i]->name, ['first_name', 'last_name']))
@@ -35,7 +35,7 @@ for ($i = 0, $n = count($fields); $i < $n; $i++)
 		unset($fields[$i]);
 	}
 }
-
+*/
 $cols    = count($fields);
 $rootUri = JUri::root(true);
 ?>
@@ -153,8 +153,6 @@ jQuery(document).ready(function() {
 	google.maps.event.addDomListener(window, 'load', showPractitionerMap(<?php echo $data;?>));
 
 });
-
-//var data = <?php echo $data;?>;
 
 </script>
 <style>
