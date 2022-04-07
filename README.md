@@ -12,3 +12,9 @@ Built as a template override for the Membership Pro component's "member list" vi
 * Displays list of members that are visible within current map view.
 * Clicking on member in list zooms map to that specific pin and displays the popup.
 * Moving or zooming the map dynamically adjusts the members that appear on the map and in the list.
+
+### Note
+Members must be previously geocoded, storing the lat/long values in custom fields on the record.
+
+Did not want to geocode on the fly due to overhead and cost.  Instead, the geocoding is done by a separate plugin that is triggered by internal Membership Pro events.
+Refer to geocode-mpro-profile repo.
