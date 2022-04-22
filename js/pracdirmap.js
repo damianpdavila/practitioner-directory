@@ -69,17 +69,16 @@ function buildMap(mar) {
     pdm_data.data.sort(SortByName);
 
     for (var i = 0; i < pdm_data.member_count; i++) {
-        var dataPhoto = pdm_data.data[i];
 
-        if (dataPhoto) {
+        if (pdm_data.data[i]) {
 
-            if (dataPhoto.profile_marker_picture) {
-                var image_icon = MARKER_IMAGE_PATH + dataPhoto.profile_marker_picture;
+            if (pdm_data.data[i].profile_marker_picture) {
+                var image_icon = MARKER_IMAGE_PATH + pdm_data.data[i].profile_marker_picture;
             } else {
                 var image_icon = MARKER_DEFAULT_PATH + 'pin.png';
             }
 
-            var latLng = new google.maps.LatLng(dataPhoto.latitude, dataPhoto.longitude);
+            var latLng = new google.maps.LatLng(pdm_data.data[i].latitude, pdm_data.data[i].longitude);
             var marker = new google.maps.Marker({
                 position: latLng,
                 icon: image_icon,
@@ -197,24 +196,22 @@ function buildMap(mar) {
     });
 }
 
-markerClickFunction = function(pic, latlng, infoWindow) {
+markerClickFunction = function(member, latlng, infoWindow) {
     return function(e) {
-        e.cancelBubble = true;
-        e.returnValue = false;
 
         if (e.stopPropagation) {
             e.stopPropagation();
             e.preventDefault();
         }
-        var title = pic.name;
-        var address = pic.address;
-        var email = pic.email;
-        var fileurl = pic.member_link;
-        var org = pic.organization;
+        var title = member.name;
+        var address = member.address;
+        var email = member.email;
+        var fileurl = member.member_link;
+        var org = member.organization;
 
         var infoHtml = '<div class="info">' +
             '<h3>' + title + '</h3>';
-        let logo_img = pic.avatar ? '<img class="map_logo" width="50" height="auto" src="' + AVATAR_PATH + pic.avatar + '"><br/>' : '';
+        let logo_img = member.avatar ? '<img class="map_logo" width="50" height="auto" src="' + AVATAR_PATH + member.avatar + '"><br/>' : '';
         infoHtml +=
             logo_img +
             '<div class="info-body">' + org + '</div><br/>' +
@@ -222,8 +219,8 @@ markerClickFunction = function(pic, latlng, infoWindow) {
             '<div class="info-body">' + address + '</div><br/>' +
             '<div class="info-body"><a href="' + fileurl + '" target="_blank">Read the full profile</a></div></div>';
 
-        if (pic.profile_marker_picture) {
-            var image_icon = MARKER_IMAGE_PATH + pic.profile_marker_picture;
+        if (member.profile_marker_memberture) {
+            var image_icon = MARKER_IMAGE_PATH + member.profile_marker_picture;
 
         } else {
             var image_icon = MARKER_DEFAULT_PATH + 'pin.png';
@@ -249,15 +246,19 @@ function codeAddress() {
 
     var geocoder = new google.maps.Geocoder();
 
+    if (document.getElementById(MAP_SEARCH_INPUT_EL_ID).value == '') {
+        alert("Please enter a location ");
+        return false;
+    }
     var address = document.getElementById(MAP_SEARCH_INPUT_EL_ID).value;
 
     if (document.getElementById(MAP_SEARCH_RADIUS_EL_ID).value == '') {
         alert("Please enter radius ");
         return false;
     }
+    var radius = parseInt(document.getElementById(MAP_SEARCH_RADIUS_EL_ID).value, 10) * 1000;
 
     var filter_users = [];
-    var radius = parseInt(document.getElementById(MAP_SEARCH_RADIUS_EL_ID).value, 10) * 1000;
 
     geocoder.geocode({
         'address': address
