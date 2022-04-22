@@ -157,11 +157,17 @@ jQuery(document).ready(function() {
 </script>
 <style>
 #markerlist {
-	height: 510px;
+	height: 500px;
 	overflow: auto;
+	box-shadow: 0px 0px 8px #00f3;
+    background-color: #fcfcfc;
 }
-#markerlist div a{
-	margin:0px 0px 0px 15px;
+#markerlist div {
+	margin: 0px 0px 0px 2em;
+    text-indent: -1em;
+}
+a.title {
+    line-height: 1.72em;
 }
 .btn {
   box-shadow: 0px 0px 5px #00f3;
