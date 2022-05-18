@@ -38,10 +38,14 @@ for ($i = 0, $n = count($fields); $i < $n; $i++)
 */
 $cols    = count($fields);
 $rootUri = JUri::root(true);
+
+use Joomla\CMS\Factory;
+$document = Factory::getDocument();
+$document->addScript(JURI::base().'templates/aatcvm/js/markerclusterer.js', array('version'=>'auto'));
+$document->addScript(JURI::base().'templates/aatcvm/js/pracdirmap.js', array('version'=>'auto'));
+$document->addScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyAOf2GKffM0r_T8-Ecbg4L-1no02RXux5k&libraries=geometry,places');
+
 ?>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOf2GKffM0r_T8-Ecbg4L-1no02RXux5k&libraries=geometry,places"></script>
-<script type="text/javascript" src="<?php echo JURI::base();?>templates/aatcvm/js/markerclusterer.js"></script>
-<script type="text/javascript" src="<?php echo JURI::base();?>templates/aatcvm/js/pracdirmap.js"></script>
 <script type="text/javascript">
     window.addEventListener("load", function() {
 

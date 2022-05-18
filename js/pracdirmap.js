@@ -120,7 +120,7 @@ function buildMap(mar) {
                 info_html +=
                     logo_img + '<br/>' +
                     pdm_data.data[i].organization + '<br/>' +
-                    pdm_data.data[i].email + '<br/>' +
+                    // pdm_data.data[i].email + '<br/>' +
                     pdm_data.data[i].address + '<br/><br/>' +
                     '<a href=' + str + '>Read the full profile</a>' +
                     '</div>';
@@ -215,7 +215,7 @@ markerClickFunction = function(member, latlng, infoWindow) {
         infoHtml +=
             logo_img +
             '<div class="info-body">' + org + '</div><br/>' +
-            '<div class="info-body">' + email + '</div><br/>' +
+            // '<div class="info-body">' + email + '</div><br/>' +
             '<div class="info-body">' + address + '</div><br/>' +
             '<div class="info-body"><a href="' + fileurl + '" target="_blank">Read the full profile</a></div></div>';
 
