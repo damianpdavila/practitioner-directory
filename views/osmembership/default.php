@@ -176,6 +176,9 @@ a.title {
 .btn {
   box-shadow: 0px 0px 5px #00f3;
 }
+button.btn:focus {
+    outline: none;
+}
 .wrapper {
   display: grid;
   gap: 20px;
