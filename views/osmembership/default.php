@@ -24,19 +24,6 @@ $rowFluidClass   = $bootstrapHelper->getClassMapping('row-fluid');
 $clearfixClass   = $bootstrapHelper->getClassMapping('clearfix');
 $centerClass     = $bootstrapHelper->getClassMapping('center');
 
-$fields = $this->fields;
-
-// Remove first_name and last_name as it is displayed in single name field
-/*
-for ($i = 0, $n = count($fields); $i < $n; $i++)
-{
-	if (in_array($fields[$i]->name, ['first_name', 'last_name']))
-	{
-		unset($fields[$i]);
-	}
-}
-*/
-$cols    = count($fields);
 $rootUri = JUri::root(true);
 
 use Joomla\CMS\Factory;
@@ -89,6 +76,7 @@ Custom fields: $fields
 [
 	{"id":"15","plan_id":"0","name":"latitude","title":"Address Latitude","description":"","field_type":null,"required":"0","values":"","default_values":"","rows":"0","cols":"0","size":"0","css_class":"","extra":"","ordering":"15","published":"1","datatype_validation":"0","field_mapping":null,"is_core":"0","show_on_subscription_payment":"0","taxable":"1","newsletter_field_mapping":null,"populate_from_previous_subscription":"1","prompt_text":"","filterable":"0","pattern":null,"min":"0","max":"0","step":"0","show_on_subscription_form":"0","show_on_subscriptions":"0","hide_on_membership_renewal":"0","hide_on_email":"0","hide_on_export":"0","show_on_members_list":"1","show_on_group_member_form":"0","is_searchable":"0","show_on_profile":"0","show_on_user_profile":"1","fee_field":"0","fee_values":"","fee_formula":"","profile_field_mapping":"","depend_on_field_id":"0","depend_on_options":"[]","joomla_group_ids":"","max_length":"0","place_holder":"","multiple":"0","validation_rules":"","server_validation_rules":"","validation_error_message":"","modify_subscription_duration":"","can_edit_on_profile":"1","fieldtype":"Text","populate_from_group_admin":"0","access":"1","filter":"","container_class":"","container_size":"","input_size":"","assignment":"0","allowed_file_types":"","lannguage":null,"fieldSuffix":""},
 	{"id":"16","plan_id":"0","name":"longitude","title":"Address Longitude","description":"","field_type":null,"required":"0","values":"","default_values":"","rows":"0","cols":"0","size":"0","css_class":"","extra":"","ordering":"16","published":"1","datatype_validation":"0","field_mapping":null,"is_core":"0","show_on_subscription_payment":"0","taxable":"1","newsletter_field_mapping":null,"populate_from_previous_subscription":"1","prompt_text":"","filterable":"0","pattern":null,"min":"0","max":"0","step":"0","show_on_subscription_form":"0","show_on_subscriptions":"0","hide_on_membership_renewal":"0","hide_on_email":"0","hide_on_export":"0","show_on_members_list":"1","show_on_group_member_form":"0","is_searchable":"0","show_on_profile":"0","show_on_user_profile":"1","fee_field":"0","fee_values":"","fee_formula":"","profile_field_mapping":"","depend_on_field_id":"0","depend_on_options":"[]","joomla_group_ids":"","max_length":"0","place_holder":"","multiple":"0","validation_rules":"","server_validation_rules":"","validation_error_message":"","modify_subscription_duration":"","can_edit_on_profile":"1","fieldtype":"Text","populate_from_group_admin":"0","access":"1","filter":"","container_class":"","container_size":"","input_size":"","assignment":"0","allowed_file_types":"","lannguage":null,"fieldSuffix":""}
+	...
 ]
 Custom field values: $this->fieldsData
 {"1605":{"15":"26.0092472","16":"-80.3933008"}}
@@ -101,13 +89,6 @@ Member details: $this->items, $row->field in the loop
 ]
 */
 
-$custom_field_names = array_column($fields, 'name');
-$latitude_key = array_search('latitude', $custom_field_names);
-$latitude_key = $fields[$latitude_key]->id;
-$longitude_key = array_search('longitude', $custom_field_names);
-$longitude_key = $fields[$longitude_key]->id;
-
-$fieldsData = $this->fieldsData;
 $previous_user_id = '';
 
 for ($i = 0 , $n = count($this->items) ; $i < $n ; $i++)
@@ -125,15 +106,42 @@ for ($i = 0 , $n = count($this->items) ; $i < $n ; $i++)
 	$link = JRoute::_('index.php?option=com_osmembership&view=member&id=' . $row->id . '&Itemid=' . $this->Itemid);
 	$member_data = [];
 	$member_data['id'] = $row->id;
-	$member_data['address'] = $row->address . '<br/>'. $row->address2 . '<br/>' . $row->city .', '. $row->state .' '. $row->zip .' '. $row->country;
-	$member_data['longitude'] = $fieldsData[$row->id][$longitude_key];
-	$member_data['latitude'] = $fieldsData[$row->id][$latitude_key];;
+	$member_data['longitude'] = $row->longitude;
+	$member_data['latitude'] = $row->latitude;
 	$member_data['name'] = $row->first_name . ' ' . $row->last_name;
-	$member_data['email'] = $row->email;
 	$member_data['organization'] = $row->organization;
 	$member_data['profile_marker_picture'] = '';
 	$member_data['member_link'] = $link;
 	$member_data['avatar'] = '';
+
+	// If member entered public profile fields use them...
+	if ( $row->public_address && $row->public_city && $row->public_state )
+	{
+		$member_data['address'] = 
+			$row->public_address
+			. '<br/>'
+			. $row->public_address2
+			. '<br/>'
+			. $row->public_city
+			.', '
+			. $row->public_state
+			. ' '
+			. $row->public_zip
+			. '<br/> '
+			. $row->public_country
+			;
+		$member_data['email'] = $row->public_email;
+		$member_data['website'] = $row->public_url;
+		$member_data['phone'] = $row->public_phone;
+	}
+	else 
+	{
+		// ... otherwise display limited data from the regular profile because could be personal or sensitive.
+		$member_data['address'] = $row->city .', '. $row->state .' '. $row->zip . '<br/>' . $row->country;
+		$member_data['email'] = '';
+		$member_data['website'] = '';
+		$member_data['phone'] = '';
+	}
 	
 	if ($showAvatar)
 	{
